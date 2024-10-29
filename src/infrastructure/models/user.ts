@@ -1,16 +1,27 @@
-const { model, Schema } = require("mongoose");
+import { model, Schema, Document } from "mongoose";
 
-const userSchema = new Schema(
+export interface IUser extends Document {
+  _id: string;  
+  roleId: number;
+  role: "Admin" | "User" | "Moderator";
+  name: string;
+  email: string;
+  password: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+const userSchema = new Schema<IUser>(
   {
     roleId: {
       type: Number,
-      enum: [1, 2, 3], 
+      enum: [1, 2, 3],
       required: true,
     },
     role: {
-      type: String, 
-      enum: ["Admin", "User", "Moderator"], 
-      default: "User", 
+      type: String,
+      enum: ["Admin", "User", "Moderator"],
+      default: "User",
       required: true,
     },
     name: {
@@ -19,7 +30,7 @@ const userSchema = new Schema(
       minLength: 3,
       maxLength: 100,
       validate: {
-        validator: function (value) {
+        validator: function (value: string) {
           const alphabetRegex = /^[a-zA-Z\s]+$/;
           return alphabetRegex.test(value);
         },
@@ -31,7 +42,7 @@ const userSchema = new Schema(
       required: true,
       unique: true,
       validate: {
-        validator: function (value) {
+        validator: function (value: string) {
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           return emailRegex.test(value);
         },
@@ -45,10 +56,10 @@ const userSchema = new Schema(
     },
   },
   {
-    timestamps: true,
+    timestamps: true, 
   }
 );
 
-const userModel = model("User", userSchema);
+const userModel = model<IUser>("User", userSchema);
 
-module.exports = userModel;
+export default userModel;

@@ -6,13 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const auth_ts_1 = __importDefault(require("./src/api/routes/auth.ts"));
+const auth_1 = __importDefault(require("./api/routes/auth"));
 //import productRoutes from './src/api/routes/product';
 //import categoryRoutes from './src/api/routes/category';
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use('/users', auth_ts_1.default);
+app.use('/users', auth_1.default);
 //app.use('/products', productRoutes);
 //app.use('/categories', categoryRoutes);
 mongoose_1.default
