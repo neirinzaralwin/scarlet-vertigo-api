@@ -16,7 +16,7 @@ class UserController {
       const user = await userService.findById(req.params.id);
       if (!user) {
         res.status(404).json({ message: "User not found" });
-        return; // explicitly end the function after sending the response
+        return; 
       }
       res.status(200).json(user);
     } catch (error) {
