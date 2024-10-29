@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
 import userRoutes from './api/routes/auth';
-//import productRoutes from './src/api/routes/product';
+import productRoutes from './api/routes/product';
 import categoryRoutes from './api/routes/category';
 
 dotenv.config();
@@ -13,7 +13,7 @@ const app: Application = express();
 app.use(express.json());
 
 app.use('/users', userRoutes);
-//app.use('/products', productRoutes);
+app.use('/products', productRoutes);
 app.use('/categories', categoryRoutes);
 
 mongoose
