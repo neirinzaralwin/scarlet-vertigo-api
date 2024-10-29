@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 import userRoutes from './api/routes/auth';
 //import productRoutes from './src/api/routes/product';
-//import categoryRoutes from './src/api/routes/category';
+import categoryRoutes from './api/routes/category';
 
 dotenv.config();
 
@@ -14,7 +14,7 @@ app.use(express.json());
 
 app.use('/users', userRoutes);
 //app.use('/products', productRoutes);
-//app.use('/categories', categoryRoutes);
+app.use('/categories', categoryRoutes);
 
 mongoose
   .connect(process.env.MONGODB_URL as string)
