@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import userRoutes from './api/routes/auth';
 import productRoutes from './api/routes/product';
 import categoryRoutes from './api/routes/category';
+import sizeRoutes from './api/routes/size';
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use('/users', userRoutes);
 app.use('/products', productRoutes);
 app.use('/categories', categoryRoutes);
+app.use('/sizes', sizeRoutes);
 
 mongoose
   .connect(process.env.MONGODB_URL as string)
