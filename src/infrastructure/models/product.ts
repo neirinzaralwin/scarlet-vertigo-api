@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Model } from 'mongoose';
 
-export interface ProductDocument extends Document {  
+export interface ProductDocument extends Document {
   categoryId: mongoose.Types.ObjectId;
   sizeId?: mongoose.Types.ObjectId;
   name: string;
@@ -14,6 +14,8 @@ export interface ProductDocument extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type ProductPublicDocument = Omit<ProductDocument, 'categoryId' | 'sizeId' | 'createdAt' | 'updatedAt'>;
 
 const productSchema = new Schema<ProductDocument>({
   categoryId: { type: Schema.Types.ObjectId, ref: 'Category', required: true },

@@ -1,4 +1,4 @@
-import Product, { ProductDocument } from '../../infrastructure/models/product';
+import Product, { ProductDocument, ProductPublicDocument } from '../../infrastructure/models/product';
 
 interface ProductData {
   categoryId: string;
@@ -14,25 +14,35 @@ interface ProductData {
 }
 
 class ProductService {
-  async create(productData: ProductData): Promise<ProductDocument> {
+  async create(productData: ProductData): Promise<ProductPublicDocument> {
     const newProduct = new Product(productData);
-    return await newProduct.save();
+    const savedProduct = await newProduct.save();
+    return this.toPublicDocument(savedProduct);
   }
 
-  async findAll(): Promise<ProductDocument[]> {
-    return await Product.find();
+  async findAll(): Promise<ProductPublicDocument[]> {
+    const products = await Product.find();
+    return products.map((product) => this.toPublicDocument(product));
   }
 
-  async findById(id: string): Promise<ProductDocument | null> {
-    return await Product.findById(id);
+  async findById(id: string): Promise<ProductPublicDocument | null> {
+    const product = await Product.findById(id);
+    return product ? this.toPublicDocument(product) : null;
   }
 
-  async update(id: string, productData: ProductData): Promise<ProductDocument | null> {
-    return await Product.findByIdAndUpdate(id, productData, { new: true });
+  async update(id: string, productData: ProductData): Promise<ProductPublicDocument | null> {
+    const updatedProduct = await Product.findByIdAndUpdate(id, productData, { new: true });
+    return updatedProduct ? this.toPublicDocument(updatedProduct) : null;
   }
 
-  async delete(id: string): Promise<ProductDocument | null> {
-    return await Product.findByIdAndDelete(id);
+  async delete(id: string): Promise<ProductPublicDocument | null> {
+    const deletedProduct = await Product.findByIdAndDelete(id);
+    return deletedProduct ? this.toPublicDocument(deletedProduct) : null;
+  }
+
+  toPublicDocument(product: ProductDocument): ProductPublicDocument {
+    const { categoryId, sizeId, createdAt, updatedAt, ...publicProduct } = product.toObject();
+    return publicProduct as ProductPublicDocument;
   }
 }
 

@@ -6,8 +6,8 @@ class ProductController {
   async createProduct(req: Request, res: Response): Promise<Response> {
     try {
       const productData = req.body;
-      const newProduct = await productService.create(productData);
-      return res.status(201).json(newProduct);
+      const publicProduct = await productService.create(productData);
+      return res.status(201).json(publicProduct);
     } catch (error: any) {
       console.error('Error creating product:', error);
       return res.status(500).json({ message: 'Error creating product', error: error.message });
@@ -17,8 +17,8 @@ class ProductController {
   // Get all products
   async getAllProducts(req: Request, res: Response): Promise<Response> {
     try {
-      const products = await productService.findAll();
-      return res.status(200).json(products);
+      const publicProducts = await productService.findAll();
+      return res.status(200).json(publicProducts);
     } catch (error: any) {
       console.error('Error retrieving products:', error);
       return res.status(500).json({ message: 'Error retrieving products', error: error.message });
@@ -29,11 +29,11 @@ class ProductController {
   async getProductById(req: Request, res: Response): Promise<Response> {
     try {
       const { id } = req.params;
-      const product = await productService.findById(id);
-      if (!product) {
+      const publicProduct = await productService.findById(id);
+      if (!publicProduct) {
         return res.status(404).json({ message: 'Product not found' });
       }
-      return res.status(200).json(product);
+      return res.status(200).json(publicProduct);
     } catch (error: any) {
       console.error('Error retrieving product:', error);
       return res.status(500).json({ message: 'Error retrieving product', error: error.message });
@@ -45,11 +45,11 @@ class ProductController {
     try {
       const { id } = req.params;
       const productData = req.body;
-      const updatedProduct = await productService.update(id, productData);
-      if (!updatedProduct) {
+      const publicProduct = await productService.update(id, productData);
+      if (!publicProduct) {
         return res.status(404).json({ message: 'Product not found' });
       }
-      return res.status(200).json(updatedProduct);
+      return res.status(200).json(publicProduct);
     } catch (error: any) {
       console.error('Error updating product:', error);
       return res.status(500).json({ message: 'Error updating product', error: error.message });
@@ -60,8 +60,8 @@ class ProductController {
   async deleteProduct(req: Request, res: Response): Promise<Response> {
     try {
       const { id } = req.params;
-      const deletedProduct = await productService.delete(id);
-      if (!deletedProduct) {
+      const publicProduct = await productService.delete(id);
+      if (!publicProduct) {
         return res.status(404).json({ message: 'Product not found' });
       }
       return res.status(204).send();
