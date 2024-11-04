@@ -1,13 +1,19 @@
 import { Request, Response } from 'express';
 import productService from '../../domain/services/product.service';
+import fs from 'fs';
+import path from 'path';
 
 class ProductController {
-  // Create a new product
+  // Create a new product with an optional image
   async createProduct(req: Request, res: Response): Promise<Response> {
     try {
       const productData = req.body;
-      const publicProduct = await productService.create(productData);
-      return res.status(201).json(publicProduct);
+
+      const imagePath = req.file ? path.join('images', req.file.filename) : undefined;
+
+      const product = await productService.create(productData, imagePath);
+
+      return res.status(201).json(product);
     } catch (error: any) {
       console.error('Error creating product:', error);
       return res.status(500).json({ message: 'Error creating product', error: error.message });
