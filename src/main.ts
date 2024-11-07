@@ -6,6 +6,7 @@ import userRoutes from './api/routes/auth';
 import productRoutes from './api/routes/product';
 import categoryRoutes from './api/routes/category';
 import sizeRoutes from './api/routes/size';
+import newsRoutes from './api/routes/news';
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use('/users', userRoutes);
 app.use('/products', productRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/sizes', sizeRoutes);
+app.use('/news', newsRoutes);
 
 mongoose
   .connect(process.env.MONGODB_URL as string)
