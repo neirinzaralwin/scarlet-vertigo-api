@@ -1,5 +1,5 @@
 import ProductRepository from '../../infrastructure/repositories/product.repository';
-import { ProductPublicDocument, ProductDocument } from '../../infrastructure/models/product';
+import Product, { ProductDocument } from '../../infrastructure/models/product';
 import mongoose from 'mongoose';
 
 interface ProductData {
@@ -16,45 +16,55 @@ interface ProductData {
 }
 
 class ProductService {
-  async create(productData: ProductData, imagePath?: string): Promise<ProductPublicDocument> {
-    // Create the product
-    const newProduct: ProductDocument = await ProductRepository.create(productData);
+  // Create a new product 
+  async create(productData: ProductData, imagePath?: string): Promise<Partial<ProductDocument>> {
+    let imageIds: mongoose.Types.ObjectId[] = [];
 
     if (imagePath) {
-      const imageUploadInput = {
-        productId: newProduct._id as mongoose.Types.ObjectId, 
-        url: imagePath,
-      };
-      await ProductRepository.uploadImage(imageUploadInput);
+      const image = await ProductRepository.uploadImage({ url: imagePath });
+      imageIds.push(image._id);
     }
 
-    return this.toPublicDocument(newProduct);
+    const newProduct = await ProductRepository.create(productData, imageIds);
+
+    const populatedProduct = await Product.findById(newProduct._id).populate('imageUrls', 'url');
+
+    return populatedProduct?.toJSON() as Partial<ProductDocument>;
   }
 
-  async findAll(): Promise<ProductPublicDocument[]> {
+  // Get all products
+  async findAll(): Promise<Partial<ProductDocument>[]> {
     const products = await ProductRepository.findAll();
-    return products.map((product) => this.toPublicDocument(product));
+    const populatedProducts = await Product.populate(products, { path: 'imageUrls', select: 'url' });
+    return populatedProducts.map((product) => product.toJSON() as Partial<ProductDocument>);
   }
 
-  async findById(id: string): Promise<ProductPublicDocument | null> {
+
+  // Get a product by ID
+  async findById(id: string): Promise<Partial<ProductDocument> | null> {
     const product = await ProductRepository.findById(id);
-    return product ? this.toPublicDocument(product) : null;
+    if (product) {
+      await product.populate('imageUrls', 'url');
+    }
+    return product ? (product.toJSON() as Partial<ProductDocument>) : null;
   }
 
-  async update(id: string, productData: ProductData): Promise<ProductPublicDocument | null> {
-    const updatedProduct = await ProductRepository.update(id, productData);
-    return updatedProduct ? this.toPublicDocument(updatedProduct) : null;
+  // Update a product
+  async update(id: string, productData: ProductData): Promise<Partial<ProductDocument> | null> {
+    await ProductRepository.update(id, productData);
+    const updatedProduct = await Product.findById(id).populate('imageUrls', 'url');
+    return updatedProduct ? (updatedProduct.toJSON() as Partial<ProductDocument>) : null;
   }
 
-  async delete(id: string): Promise<ProductPublicDocument | null> {
-    const deletedProduct = await ProductRepository.delete(id);
-    return deletedProduct ? this.toPublicDocument(deletedProduct) : null;
-  }
-
-  toPublicDocument(product: ProductDocument): ProductPublicDocument {
-    const { categoryId, sizeId, createdAt, updatedAt, ...publicProduct } = product.toObject();
-    return publicProduct as ProductPublicDocument;
-  }
+  // Delete a product
+  async delete(id: string): Promise<Partial<ProductDocument> | null> {
+    const deletedProduct = await ProductRepository.findById(id);
+    if (deletedProduct) {
+      await deletedProduct.populate('imageUrls', 'url');
+      await Product.findByIdAndDelete(id); 
+    }
+    return deletedProduct ? (deletedProduct.toJSON() as Partial<ProductDocument>) : null;
+  }  
 }
 
 export default new ProductService();

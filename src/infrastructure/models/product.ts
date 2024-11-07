@@ -11,11 +11,11 @@ export interface ProductDocument extends Document {
   sku?: string;
   price: mongoose.Types.Decimal128;
   stock?: number;
+  imageIds?: mongoose.Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
+  imageUrls?: string[];  
 }
-
-export type ProductPublicDocument = Omit<ProductDocument, 'categoryId' | 'sizeId' | 'createdAt' | 'updatedAt'>;
 
 const productSchema = new Schema<ProductDocument>({
   categoryId: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
@@ -28,8 +28,41 @@ const productSchema = new Schema<ProductDocument>({
   sku: { type: String },
   price: { type: mongoose.Types.Decimal128, required: true },
   stock: { type: Number },
+  imageIds: [{ type: Schema.Types.ObjectId, ref: 'Image' }],  
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+});
+
+productSchema.virtual('imageUrls', {
+  ref: 'Image',
+  localField: 'imageIds',
+  foreignField: '_id',
+  justOne: false,
+  options: { select: 'url' },  
+});
+
+productSchema.set('toJSON', {
+  virtuals: true,
+  transform: (doc, ret) => {
+    delete ret.categoryId;
+    delete ret.sizeId;
+    delete ret.createdAt;
+    delete ret.updatedAt;
+    delete ret.__v;  
+    return ret;
+  }
+});
+
+productSchema.set('toObject', {
+  virtuals: true,
+  transform: (doc, ret) => {
+    delete ret.categoryId;
+    delete ret.sizeId;
+    delete ret.createdAt;
+    delete ret.updatedAt;
+    delete ret.__v; 
+    return ret;
+  }
 });
 
 const Product: Model<ProductDocument> = mongoose.model<ProductDocument>('Product', productSchema);

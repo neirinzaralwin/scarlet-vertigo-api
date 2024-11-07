@@ -1,5 +1,5 @@
 import Product, { ProductDocument } from '../models/product';
-import ProductImage, { IProductImage } from '../models/product-image'; 
+import Image, { IImage } from '../models/image';
 import mongoose from 'mongoose';
 
 interface ProductData {
@@ -16,40 +16,43 @@ interface ProductData {
 }
 
 interface ImageUploadInput {
-  productId: mongoose.Types.ObjectId;
   url: string;
 }
 
 class ProductRepository {
-  async create(productData: ProductData): Promise<ProductDocument> {
-    const product = new Product(productData);
+  async create(productData: ProductData, imageIds: mongoose.Types.ObjectId[]): Promise<ProductDocument> {
+    const product = new Product({
+      ...productData,
+      imageIds, 
+    });
     return await product.save();
   }
 
   async findAll(): Promise<ProductDocument[]> {
-    return await Product.find();
-  }
+    return await Product.find().populate('imageUrls', 'url');
+  }  
 
   async findById(id: string): Promise<ProductDocument | null> {
-    return await Product.findById(id);
-  }
+    return await Product.findById(id).populate('imageUrls', 'url');
+  }  
 
   async update(id: string, productData: ProductData): Promise<ProductDocument | null> {
-    return await Product.findByIdAndUpdate(id, productData, { new: true });
-  }
+    return await Product.findByIdAndUpdate(id, productData, { new: true }).populate('imageUrls', 'url');
+  }  
 
   async delete(id: string): Promise<ProductDocument | null> {
-    return await Product.findByIdAndDelete(id);
-  }
+    const product = await Product.findById(id).populate('imageUrls', 'url');
+    if (product) {
+      await Product.findByIdAndDelete(id);
+    }
+    return product;
+  }  
 
-  async uploadImage(imageData: ImageUploadInput): Promise<IProductImage> {
+  async uploadImage(imageData: ImageUploadInput): Promise<IImage> {
     try {
-      const { productId, url } = imageData;
+      const { url } = imageData;
 
-      const productImage = new ProductImage({
-        productId,
-        url,
-      });
+      const productImage = new Image({ url });
       return await productImage.save();
     } catch (error) {
       console.error("Error uploading image URL:", error);
