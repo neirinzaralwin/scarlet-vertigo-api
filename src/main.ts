@@ -7,6 +7,8 @@ import productRoutes from './api/routes/product';
 import categoryRoutes from './api/routes/category';
 import sizeRoutes from './api/routes/size';
 import newsRoutes from './api/routes/news';
+import requestFormRoutes from './api/routes/requestForm';
+import { specs, swaggerUi } from '../src/config/swagger';
 
 dotenv.config();
 
@@ -19,6 +21,9 @@ app.use('/products', productRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/sizes', sizeRoutes);
 app.use('/news', newsRoutes);
+app.use('/requestForm', requestFormRoutes);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 mongoose
   .connect(process.env.MONGODB_URL as string)
