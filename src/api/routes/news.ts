@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import NewsController from '../controllers/news';
 import upload from '../../config/fileUpload';
+import authMiddleware  from '../middlewares/is-auth';
 
 const router = express.Router();
 
@@ -35,7 +36,7 @@ const asyncHandler = (fn: Function) => (req: Request, res: Response, next: NextF
  *       400:
  *         description: Invalid input.
  */
-router.post('/', upload.single('file'), asyncHandler((req: Request, res: Response) => NewsController.createNews(req, res)));
+router.post('/', upload.single('file'), authMiddleware("Admin"), asyncHandler((req: Request, res: Response) => NewsController.createNews(req, res)));
 
 /**
  * @swagger
@@ -103,7 +104,7 @@ router.get('/:id', asyncHandler((req: Request, res: Response) => NewsController.
  *       404:
  *         description: News entry not found.
  */
-router.put('/:id', asyncHandler((req: Request, res: Response) => NewsController.updateNews(req, res)));
+router.put('/:id', authMiddleware("Admin"), asyncHandler((req: Request, res: Response) => NewsController.updateNews(req, res)));
 
 /**
  * @swagger
@@ -125,6 +126,6 @@ router.put('/:id', asyncHandler((req: Request, res: Response) => NewsController.
  *       404:
  *         description: News entry not found.
  */
-router.delete('/:id', asyncHandler((req: Request, res: Response) => NewsController.deleteNews(req, res)));
+router.delete('/:id', authMiddleware("Admin"), asyncHandler((req: Request, res: Response) => NewsController.deleteNews(req, res)));
 
 export default router;

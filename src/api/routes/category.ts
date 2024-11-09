@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import categoryController from '../controllers/category';
+import authMiddleware  from '../middlewares/is-auth';
 
 const router = express.Router();
 
@@ -29,7 +30,7 @@ const asyncHandler = (fn: Function) => (req: Request, res: Response, next: NextF
  *       400:
  *         description: Invalid input.
  */
-router.post('/', asyncHandler((req: Request, res: Response) => categoryController.create(req, res)));
+router.post('/', authMiddleware("Admin"), asyncHandler((req: Request, res: Response) => categoryController.create(req, res)));
 
 /**
  * @swagger
@@ -96,7 +97,7 @@ router.get('/:id', asyncHandler((req: Request, res: Response) => categoryControl
  *       404:
  *         description: Category not found.
  */
-router.put('/:id', asyncHandler((req: Request, res: Response) => categoryController.update(req, res)));
+router.put('/:id', authMiddleware("Admin"), asyncHandler((req: Request, res: Response) => categoryController.update(req, res)));
 
 /**
  * @swagger
@@ -118,6 +119,6 @@ router.put('/:id', asyncHandler((req: Request, res: Response) => categoryControl
  *       404:
  *         description: Category not found.
  */
-router.delete('/:id', asyncHandler((req: Request, res: Response) => categoryController.delete(req, res)));
+router.delete('/:id', authMiddleware("Admin"), asyncHandler((req: Request, res: Response) => categoryController.delete(req, res)));
 
 export default router;

@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import productController from '../controllers/product';
 import upload from '../../config/fileUpload';
+import authMiddleware  from '../middlewares/is-auth';
 
 const router = express.Router();
 
@@ -39,7 +40,7 @@ const asyncHandler = (fn: Function) => (req: Request, res: Response, next: NextF
  *       400:
  *         description: Invalid input.
  */
-router.post('/', upload.single('file'), asyncHandler((req: Request, res: Response) => productController.createProduct(req, res)));
+router.post('/', upload.single('file'), authMiddleware("Admin"), asyncHandler((req: Request, res: Response) => productController.createProduct(req, res)));
 
 /**
  * @swagger
@@ -111,7 +112,7 @@ router.get('/:id', asyncHandler((req: Request, res: Response) => productControll
  *       404:
  *         description: Product not found.
  */
-router.put('/:id', asyncHandler((req: Request, res: Response) => productController.updateProduct(req, res)));
+router.put('/:id', authMiddleware("Admin"), asyncHandler((req: Request, res: Response) => productController.updateProduct(req, res)));
 
 /**
  * @swagger
@@ -133,6 +134,6 @@ router.put('/:id', asyncHandler((req: Request, res: Response) => productControll
  *       404:
  *         description: Product not found.
  */
-router.delete('/:id', asyncHandler((req: Request, res: Response) => productController.deleteProduct(req, res)));
+router.delete('/:id', authMiddleware("Admin"), asyncHandler((req: Request, res: Response) => productController.deleteProduct(req, res)));
 
 export default router;

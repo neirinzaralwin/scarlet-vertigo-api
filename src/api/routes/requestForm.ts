@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import formController from '../controllers/userForm';
+import authMiddleware  from '../middlewares/is-auth';
 
 const router = express.Router();
 
@@ -45,7 +46,7 @@ router.post('/', asyncHandler((req: Request, res: Response) => formController.cr
  *       200:
  *         description: A list of form entries.
  */
-router.get('/', asyncHandler((req: Request, res: Response) => formController.findAll(req, res)));
+router.get('/', authMiddleware("Admin"), asyncHandler((req: Request, res: Response) => formController.findAll(req, res)));
 
 /**
  * @swagger
@@ -67,7 +68,7 @@ router.get('/', asyncHandler((req: Request, res: Response) => formController.fin
  *       404:
  *         description: Form entry not found.
  */
-router.get('/:id', asyncHandler((req: Request, res: Response) => formController.findById(req, res)));
+router.get('/:id', authMiddleware("Admin"), asyncHandler((req: Request, res: Response) => formController.findById(req, res)));
 
 /**
  * @swagger
@@ -102,7 +103,7 @@ router.get('/:id', asyncHandler((req: Request, res: Response) => formController.
  *       404:
  *         description: Form entry not found.
  */
-router.put('/:id', asyncHandler((req: Request, res: Response) => formController.update(req, res)));
+router.put('/:id', authMiddleware("Admin"), asyncHandler((req: Request, res: Response) => formController.update(req, res)));
 
 /**
  * @swagger
@@ -124,6 +125,6 @@ router.put('/:id', asyncHandler((req: Request, res: Response) => formController.
  *       404:
  *         description: Form entry not found.
  */
-router.delete('/:id', asyncHandler((req: Request, res: Response) => formController.delete(req, res)));
+router.delete('/:id', authMiddleware("Admin"), asyncHandler((req: Request, res: Response) => formController.delete(req, res)));
 
 export default router;

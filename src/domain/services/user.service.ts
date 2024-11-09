@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 
 interface LoginResponse {
   token: string;
-  user: IUser;  
+  user: IUser;
 }
 
 class UserService {
@@ -30,9 +30,9 @@ class UserService {
     const allowedRoles = ["Admin", "User", "Moderator"];
     userData.role = allowedRoles.includes(role as string) ? role : "User";
 
-    userData.password = await bcrypt.hash(password!, 10); 
+    userData.password = await bcrypt.hash(password!, 10);
 
-    return userRepository.create(userData as IUser);  
+    return userRepository.create(userData as IUser);
   }
 
   async login({ email, password }: { email: string; password: string }): Promise<LoginResponse> {
@@ -40,15 +40,19 @@ class UserService {
     if (!user) {
       throw new Error('Invalid credentials');
     }
-  
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       throw new Error('Invalid credentials');
     }
-  
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_KEY as string, { expiresIn: '1h' });
-  
-    return { token, user };  
+
+    const token = jwt.sign(
+      { userId: user._id, email: user.email, role: user.role }, 
+      process.env.JWT_KEY as string,
+      { expiresIn: '1h' }
+    );
+
+    return { token, user };
   }
 }
 
