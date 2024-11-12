@@ -8,6 +8,7 @@ import categoryRoutes from './api/routes/category';
 import sizeRoutes from './api/routes/size';
 import newsRoutes from './api/routes/news';
 import requestFormRoutes from './api/routes/requestForm';
+import cartRoutes from './api/routes/cart';
 import { specs, swaggerUi } from '../src/config/swagger';
 
 dotenv.config();
@@ -21,6 +22,7 @@ app.use('/products', productRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/sizes', sizeRoutes);
 app.use('/news', newsRoutes);
+app.use('/carts', cartRoutes);
 app.use('/requestForm', requestFormRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));

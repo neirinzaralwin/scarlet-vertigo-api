@@ -1,7 +1,7 @@
-import { model, Schema, Document } from "mongoose";
+import { model, Schema, Document, Types } from "mongoose";
 
 export interface IUser extends Document {
-  _id: string;  
+  _id: string;
   roleId: number;
   role: "Admin" | "User" | "Moderator";
   name: string;
@@ -9,6 +9,7 @@ export interface IUser extends Document {
   password: string;
   createdAt?: Date;
   updatedAt?: Date;
+  carts?: Types.ObjectId[]; 
 }
 
 const userSchema = new Schema<IUser>(
@@ -54,9 +55,12 @@ const userSchema = new Schema<IUser>(
       required: true,
       minLength: 6,
     },
+    carts: [
+      { type: Types.ObjectId, ref: "Cart" } 
+    ],
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
 
