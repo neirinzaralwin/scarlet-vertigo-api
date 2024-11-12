@@ -57,6 +57,32 @@ class CartService {
 
     return cart;
   }
+
+  /**
+   * Retrieves all cart items for a specific user by userId.
+   * @param userId - The ID of the user to retrieve cart items for.
+   * @returns The user's cart with populated product details, or an error if not found.
+   */
+  async getAllCartItems(userId: Types.ObjectId) {
+    const cart = await CartRepository.findByUserId(userId);
+    if (!cart) {
+      throw new ApiError(404, "Cart not found for this user");
+    }
+
+    const cartProducts = await CartRepository.findCartProducts(cart._id as Types.ObjectId);
+    if (!cartProducts.length) {
+      throw new ApiError(404, "Cart is empty for this user");
+    }
+
+    const totalPrice = cartProducts.reduce((total, item) => {
+      const itemPrice = parseFloat(item.price.toString());
+      return total + itemPrice * item.quantity;
+    }, 0);
+
+    await CartRepository.updateTotalPrice(cart._id as Types.ObjectId, totalPrice);
+
+    return { ...cart.toObject(), items: cartProducts };
+  }
 }
 
 export default new CartService();
