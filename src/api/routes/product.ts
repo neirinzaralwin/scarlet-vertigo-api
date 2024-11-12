@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import productController from '../controllers/product';
 import upload from '../../config/fileUpload';
-import authMiddleware  from '../middlewares/is-auth';
+import authMiddleware  from '../middlewares/admin';
 
 const router = express.Router();
 

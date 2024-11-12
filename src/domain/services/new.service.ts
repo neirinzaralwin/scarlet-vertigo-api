@@ -1,4 +1,3 @@
-import News from 'src/infrastructure/models/news';
 import NewsRepository from '../../infrastructure/repositories/new.repository';
 import mongoose from 'mongoose';
 import { NewsDocument } from 'src/infrastructure/models/news';

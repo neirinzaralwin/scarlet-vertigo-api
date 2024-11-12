@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import sizeController from '../controllers/size';
-import authMiddleware  from '../middlewares/is-auth';
+import authMiddleware  from '../middlewares/admin';
 
 const router = express.Router();
 

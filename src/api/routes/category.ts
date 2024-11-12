@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import categoryController from '../controllers/category';
-import authMiddleware  from '../middlewares/is-auth';
+import authMiddleware  from '../middlewares/admin';
 
 const router = express.Router();
 
