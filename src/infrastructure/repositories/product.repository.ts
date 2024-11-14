@@ -55,7 +55,6 @@ class ProductRepository {
       const productImage = new Image({ url });
       return await productImage.save();
     } catch (error) {
-      console.error("Error uploading image URL:", error);
       throw new Error("Failed to upload image URL");
     }
   }

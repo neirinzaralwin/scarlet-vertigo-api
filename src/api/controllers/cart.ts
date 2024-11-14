@@ -92,8 +92,7 @@ class CartController {
   async updateCartItem(req: Request, res: Response): Promise<void> {
     try {
       const userId = (req as Request & { user: { userId?: string } }).user?.userId;
-      const { productId } = req.params;
-      const { quantity } = req.body;
+      const { productId, quantity } = req.body;  
   
       if (!userId || !Types.ObjectId.isValid(userId) || !Types.ObjectId.isValid(productId) || quantity <= 0) {
         throw new ApiError(400, "Invalid userId, productId, or quantity provided");
@@ -123,7 +122,7 @@ class CartController {
       }
     }
   }
-
+  
   async removeItemFromCarts(req: Request, res: Response): Promise<void> {
     try {
       const userId = (req as Request & { userId?: string }).userId;

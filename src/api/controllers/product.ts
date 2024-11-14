@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import productService from '../../domain/services/product.service';
-import imageService from '../../domain/services/image.service'; 
 import path from 'path';
-import mongoose from 'mongoose';
 
 class ProductController {
   // Create
@@ -15,7 +13,6 @@ class ProductController {
   
       return res.status(201).json(product);
     } catch (error: any) {
-      console.error('Error creating product:', error);
       return res.status(500).json({ message: 'Error creating product', error: error.message });
     }
   }    
@@ -26,7 +23,6 @@ class ProductController {
       const publicProducts = await productService.findAll();
       return res.status(200).json(publicProducts);
     } catch (error: any) {
-      console.error('Error retrieving products:', error);
       return res.status(500).json({ message: 'Error retrieving products', error: error.message });
     }
   }  
@@ -41,7 +37,6 @@ class ProductController {
       }
       return res.status(200).json(publicProduct);
     } catch (error: any) {
-      console.error('Error retrieving product:', error);
       return res.status(500).json({ message: 'Error retrieving product', error: error.message });
     }
   }  
@@ -57,7 +52,6 @@ class ProductController {
       }
       return res.status(200).json(publicProduct);
     } catch (error: any) {
-      console.error('Error updating product:', error);
       return res.status(500).json({ message: 'Error updating product', error: error.message });
     }
   }  
@@ -72,7 +66,6 @@ class ProductController {
       }
       return res.status(204).send();
     } catch (error: any) {
-      console.error('Error deleting product:', error);
       return res.status(500).json({ message: 'Error deleting product', error: error.message });
     }
   }

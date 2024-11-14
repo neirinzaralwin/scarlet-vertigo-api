@@ -9,7 +9,6 @@ class FormController {
       const form = await formService.create(userId, title, message);
       res.status(201).json(form);
     } catch (error) {
-      console.error(error);
       res.status(500).json({ message: 'Error creating form', error: (error as Error).message });
     }
   }
@@ -20,7 +19,7 @@ class FormController {
       const forms = await formService.findAll();
       res.status(200).json(forms);
     } catch (error) {
-      console.error(error);
+
       res.status(500).json({ message: 'Error retrieving forms', error: (error as Error).message });
     }
   }
@@ -32,7 +31,6 @@ class FormController {
       const form = await formService.findById(id);
       res.status(200).json(form);
     } catch (error) {
-      console.error(error);
       res.status(404).json({ message: 'Form not found', error: (error as Error).message });
     }
   }
@@ -45,7 +43,6 @@ class FormController {
       const updatedForm = await formService.update(id, title, message);
       res.status(200).json(updatedForm);
     } catch (error) {
-      console.error(error);
       res.status(404).json({ message: 'Form not found',error: (error as Error).message });
     }
   }
@@ -57,7 +54,6 @@ class FormController {
       const deletedForm = await formService.delete(id);
       res.status(200).json(deletedForm);
     } catch (error) {
-      console.error(error);
       res.status(404).json({ message: 'Form not found', error: (error as Error).message });
     }
   }

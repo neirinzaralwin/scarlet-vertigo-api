@@ -111,43 +111,47 @@ class CartService {
     productId: Types.ObjectId,
     quantity: number
   ) {
-    const cart = await CartRepository.findByUserId(userId);
-    if (!cart) {
-      throw new ApiError(404, 'Cart not found for this user');
-    }
+    try {
+      const cart = await CartRepository.findByUserId(userId);
+      if (!cart) {
+        throw new ApiError(404, "Cart not found for this user");
+      }
   
-    const product = await Product.findById(productId);
-    if (!product) {
-      throw new ApiError(404, 'Product not found');
-    }
+      const product = await Product.findById(productId);
+      if (!product) {
+        throw new ApiError(404, "Product not found");
+      }
   
-    let cartProduct = await CartRepository.findCartItem(cart._id as Types.ObjectId, productId);
-    if (cartProduct) {
-      if (quantity <= 0) {
-        await CartRepository.removeCartItem(cart._id as Types.ObjectId, productId);
-      } else {
-        cartProduct.quantity = quantity;
+      let cartProduct = await CartRepository.findCartItem(cart._id as Types.ObjectId, productId);
+      if (cartProduct) {
+        if (quantity <= 0) {
+          await CartRepository.removeCartItem(cart._id as Types.ObjectId, productId);
+        } else {
+          cartProduct.quantity = quantity;
+          await cartProduct.save();
+        }
+      } else if (quantity > 0) {
+        cartProduct = new CartProduct({
+          cartId: cart._id,
+          productId,
+          quantity,
+          price: product.price,
+        });
         await cartProduct.save();
       }
-    } else if (quantity > 0) {
-      cartProduct = new CartProduct({
-        cartId: cart._id,
-        productId,
-        quantity,
-        price: product.price,
-      });
-      await cartProduct.save();
+  
+      const cartProducts = await CartRepository.findCartProducts(cart._id as Types.ObjectId);
+      const totalPrice = cartProducts.reduce((total, item) => {
+        const itemPrice = parseFloat(item.price.toString());
+        return total + itemPrice * item.quantity;
+      }, 0);
+  
+      await CartRepository.updateTotalPrice(cart._id as Types.ObjectId, totalPrice);
+  
+      return { ...cart.toObject(), items: cartProducts };
+    } catch (error) {
+      throw new ApiError(500, "Failed to update cart");
     }
-  
-    const cartProducts = await CartRepository.findCartProducts(cart._id as Types.ObjectId);
-    const totalPrice = cartProducts.reduce((total, item) => {
-      const itemPrice = parseFloat(item.price.toString());
-      return total + itemPrice * item.quantity;
-    }, 0);
-  
-    await CartRepository.updateTotalPrice(cart._id as Types.ObjectId, totalPrice);
-  
-    return { ...cart.toObject(), items: cartProducts };
   }
 
   /**
