@@ -40,7 +40,7 @@ class UserController {
   async deleteUser(req: Request, res: Response): Promise<void> {
     try {
       const deletedUser = await userService.delete(req.params.id);
-      if (deletedUser === undefined) {
+      if (!deletedUser) {
         res.status(404).json({ message: "User not found" });
         return;
       }

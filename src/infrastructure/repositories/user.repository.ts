@@ -1,4 +1,5 @@
 import userModel, { IUser } from '../models/user';
+import { USER_ROLE, RoleType } from '../../constants/role';
 
 class UserRepository {
   async findAll(): Promise<IUser[]> {
@@ -9,11 +10,12 @@ class UserRepository {
     return userModel.findById(id);
   }
 
+
   async create(userData: Partial<IUser>): Promise<IUser> {
-    const allowedRoles = ["Admin", "User", "Moderator"];
+    const allowedRoles = Object.values(USER_ROLE) as RoleType[];
     
     if (!userData.role || !allowedRoles.includes(userData.role)) {
-      userData.role = "User";
+      userData.role = USER_ROLE.customer; 
     }
 
     const newUser = new userModel(userData);
@@ -21,7 +23,7 @@ class UserRepository {
   }
 
   async update(id: string, userData: Partial<IUser>): Promise<IUser | null> {
-    const allowedRoles = ["Admin", "User", "Moderator"];
+    const allowedRoles = Object.values(USER_ROLE) as RoleType[];
     
     if (userData.role && !allowedRoles.includes(userData.role)) {
       throw new Error("Invalid role provided");

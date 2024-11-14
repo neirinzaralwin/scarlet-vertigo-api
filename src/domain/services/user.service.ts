@@ -1,5 +1,6 @@
 import userRepository from '../../infrastructure/repositories/user.repository';
 import { IUser } from '../../infrastructure/models/user';
+import { USER_ROLE, RoleType } from '../../constants/role';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -27,8 +28,9 @@ class UserService {
 
   async register(userData: Partial<IUser>): Promise<IUser> {
     const { role, password } = userData;
-    const allowedRoles = ["Admin", "User", "Moderator"];
-    userData.role = allowedRoles.includes(role as string) ? role : "User";
+    const allowedRoles = Object.values(USER_ROLE) as RoleType[];
+
+    userData.role = allowedRoles.includes(role as RoleType) ? role : USER_ROLE.customer;
 
     userData.password = await bcrypt.hash(password!, 10);
 

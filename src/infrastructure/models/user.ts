@@ -1,15 +1,17 @@
 import { model, Schema, Document, Types } from "mongoose";
+import { RoleType, USER_ROLE } from "../../constants/role";
+import { omit } from "lodash"; 
 
 export interface IUser extends Document {
   _id: string;
   roleId: number;
-  role: "Admin" | "User" | "Moderator";
+  role: RoleType;
   name: string;
   email: string;
   password: string;
   createdAt?: Date;
   updatedAt?: Date;
-  carts?: Types.ObjectId[]; 
+  carts?: Types.ObjectId[];
 }
 
 const userSchema = new Schema<IUser>(
@@ -21,8 +23,8 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ["Admin", "User", "Moderator"],
-      default: "User",
+      enum: Object.values(USER_ROLE),
+      default: USER_ROLE.customer,
       required: true,
     },
     name: {
@@ -55,9 +57,7 @@ const userSchema = new Schema<IUser>(
       required: true,
       minLength: 6,
     },
-    carts: [
-      { type: Types.ObjectId, ref: "Cart" } 
-    ],
+    carts: [{ type: Types.ObjectId, ref: "Cart" }],
   },
   {
     timestamps: true,
@@ -65,5 +65,9 @@ const userSchema = new Schema<IUser>(
 );
 
 const userModel = model<IUser>("User", userSchema);
+
+export const omitSensitiveFields = (user: IUser) => {
+  return omit(user.toObject(), ["password", "updatedAt"]);
+};
 
 export default userModel;
