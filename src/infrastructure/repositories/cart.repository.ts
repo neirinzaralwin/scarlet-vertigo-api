@@ -23,23 +23,6 @@ class CartRepository {
   }
 
   /**
-   * Saves an existing cart document.
-   * @param cart - The cart document to be saved.
-   * @returns A promise that resolves to the saved cart document.
-   */
-  async save(cart: ICart): Promise<ICart> {
-    return await cart.save();
-  }
-
-  /**
-   * Finds all carts in the collection.
-   * @returns A promise that resolves to an array of all cart documents.
-   */
-  async findAll(): Promise<ICart[]> {
-    return await Cart.find();
-  }
-
-  /**
    * Finds all products in a specific cart.
    * @param cartId - The ID of the cart to find products for.
    * @returns A promise that resolves to an array of cart products.
@@ -47,7 +30,7 @@ class CartRepository {
   async findCartProducts(cartId: Types.ObjectId) {
     return await CartProduct.find({ cartId }).populate(
       "productId",
-      "product_uid name price" // Populate with the required product fields
+      "product_uid name price"
     );
   }
 
@@ -63,6 +46,26 @@ class CartRepository {
       { totalPrice },
       { new: true }
     );
+  }
+
+  /**
+   * Finds a specific product in a cart.
+   * @param cartId - The ObjectId of the cart.
+   * @param productId - The ObjectId of the product to find.
+   * @returns The cart product document or null if not found.
+   */
+  async findCartItem(cartId: Types.ObjectId, productId: Types.ObjectId) {
+    return await CartProduct.findOne({ cartId, productId });
+  }
+
+  /**
+   * Removes a specific product from a cart.
+   * @param cartId - The ObjectId of the cart.
+   * @param productId - The ObjectId of the product to remove.
+   * @returns A promise that resolves to the removed cart product document or null if not found.
+   */
+  async removeCartItem(cartId: Types.ObjectId, productId: Types.ObjectId): Promise<any> {
+    return await CartProduct.findOneAndDelete({ cartId, productId });
   }
 }
 

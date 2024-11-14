@@ -9,6 +9,8 @@ export interface IOrder extends Document {
   updatedAt: Date;
 }
 
+export type PublicOrder = Omit<IOrder, 'userId' | 'orderProductId'>;
+
 const orderSchema: Schema<IOrder> = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -20,6 +22,11 @@ const orderSchema: Schema<IOrder> = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+orderSchema.methods.toPublicOrder = function (): PublicOrder {
+  const { userId, orderProductId, ...publicFields } = this.toObject();
+  return publicFields;
+};
 
 const Order: Model<IOrder> = mongoose.model<IOrder>('Order', orderSchema);
 export default Order;

@@ -15,17 +15,21 @@ const asyncHandler = (fn: Function) => (req: Request, res: Response, next: NextF
  *     description: Adds a new cart to the database.
  *     tags: [carts]
  *     requestBody:
- *       productID: product id to add to cart list
- *       required: true
- *       quantity: number of items to add to cart list
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               productID:
  *                 type: string
+ *                 description: product id to add to cart list
+ *               quantity:
+ *                 type: integer
+ *                 description: number of items to add to cart list
+ *             required:
+ *               - productID
+ *               - quantity
  *     responses:
  *       201:
  *         description: Item added to cart successfully.
@@ -46,5 +50,29 @@ router.post('/',  userMiddleware, asyncHandler((req: Request, res: Response) => 
  *         description: A list of carts.
  */
 router.get('/', userMiddleware, asyncHandler((req: Request, res: Response) => cartController.getAllCartItems(req, res)));
+
+router.patch('/:id', userMiddleware, asyncHandler((req: Request, res: Response) => cartController.updateCartItem(req, res)));
+
+/**
+ * @swagger
+ * /carts/{id}:
+ *   delete:
+ *     summary: Delete a cart by ID
+ *     description: Remove a specific cart by its ID.
+ *     tags: [carts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the cart to delete
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: cart deleted successfully.
+ *       404:
+ *         description: cart not found.
+ */
+router.delete('/:id', userMiddleware, asyncHandler((req: Request, res: Response) => cartController.removeItemFromCarts(req, res)));
 
 export default router;
