@@ -1,6 +1,6 @@
 import { model, Schema, Document, Types } from "mongoose";
 import { RoleType, USER_ROLE } from "../../constants/role";
-import { omit } from "lodash"; 
+import { omit } from "lodash";
 
 export interface IUser extends Document {
   _id: string;
@@ -8,7 +8,7 @@ export interface IUser extends Document {
   role: RoleType;
   name: string;
   email: string;
-  password: string;
+  password?: string;
   createdAt?: Date;
   updatedAt?: Date;
   carts?: Types.ObjectId[];

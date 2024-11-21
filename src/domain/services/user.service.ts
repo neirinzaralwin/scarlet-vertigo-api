@@ -1,12 +1,12 @@
-import userRepository from '../../infrastructure/repositories/user.repository';
-import { IUser } from '../../infrastructure/models/user';
-import { USER_ROLE, RoleType } from '../../constants/role';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import userRepository from "../../infrastructure/repositories/user.repository";
+import { IUser, omitSensitiveFields } from "../../infrastructure/models/user";
+import { USER_ROLE, RoleType } from "../../constants/role";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 interface LoginResponse {
   token: string;
-  user: IUser;
+  user: Partial<IUser>; // Use Partial<IUser> to reflect omitted fields
 }
 
 class UserService {
@@ -30,31 +30,43 @@ class UserService {
     const { role, password } = userData;
     const allowedRoles = Object.values(USER_ROLE) as RoleType[];
 
-    userData.role = allowedRoles.includes(role as RoleType) ? role : USER_ROLE.customer;
+    userData.role = allowedRoles.includes(role as RoleType)
+      ? role
+      : USER_ROLE.customer;
 
     userData.password = await bcrypt.hash(password!, 10);
 
     return userRepository.create(userData as IUser);
   }
 
-  async login({ email, password }: { email: string; password: string }): Promise<LoginResponse> {
-    const user = await userRepository.findByEmail(email);
+  async login({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }): Promise<LoginResponse> {
+    let user: IUser | null = await userRepository.findByEmail(email);
+
     if (!user) {
-      throw new Error('Invalid credentials');
+      throw new Error("Invalid credentials");
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password ?? "");
     if (!isMatch) {
-      throw new Error('Invalid credentials');
+      throw new Error("Invalid credentials");
     }
 
     const token = jwt.sign(
-      { userId: user._id, email: user.email, role: user.role }, 
+      { userId: user._id, email: user.email, role: user.role },
       process.env.JWT_KEY as string,
-      { expiresIn: '1h' }
+      { expiresIn: "1h" }
     );
 
-    return { token, user };
+    // Omit sensitive fields
+    const userWithoutSensitiveFields = omitSensitiveFields(user);
+
+    return { token, user: userWithoutSensitiveFields };
   }
 }
 
