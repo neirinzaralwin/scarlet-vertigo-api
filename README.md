@@ -1,6 +1,14 @@
 # Scarlet Vertigo Ecommerce API
 
-![Scarlet Vertigo Logo](git-resources/architecture_diagram.png)
+### Architecture Overview
+
+![Architecture Diagram](git-resources/architecture_diagram.png)
+
+### Version Control Flow
+
+![VCS Flow Diagram](git-resources/vcs_flow.png)
+
+### Folder Structure
 
 ```bash
 src
