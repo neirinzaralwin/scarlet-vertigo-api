@@ -1,5 +1,5 @@
-import express, { Request, Response } from 'express';
-import userController from '../controllers/auth';
+import express, { Request, Response } from "express";
+import userController from "../controllers/auth";
 
 const router = express.Router();
 
@@ -14,7 +14,9 @@ const router = express.Router();
  *       200:
  *         description: A list of users.
  */
-router.get('/users', (req: Request, res: Response) => userController.getAllUsers(req, res));
+router.get("/all-users", (req: Request, res: Response) =>
+  userController.getAllUsers(req, res)
+);
 
 /**
  * @swagger
@@ -36,7 +38,9 @@ router.get('/users', (req: Request, res: Response) => userController.getAllUsers
  *       404:
  *         description: User not found.
  */
-router.get('/users/:id', (req: Request, res: Response) => userController.getUserById(req, res));
+router.get("/users/:id", (req: Request, res: Response) =>
+  userController.getUserById(req, res)
+);
 
 /**
  * @swagger
@@ -72,7 +76,9 @@ router.get('/users/:id', (req: Request, res: Response) => userController.getUser
  *       404:
  *         description: User not found.
  */
-router.put('/users/:id', (req: Request, res: Response) => userController.updateUser(req, res));
+router.put("/update/:id", (req: Request, res: Response) =>
+  userController.updateUser(req, res)
+);
 
 /**
  * @swagger
@@ -94,7 +100,9 @@ router.put('/users/:id', (req: Request, res: Response) => userController.updateU
  *       404:
  *         description: User not found.
  */
-router.delete('/users/:id', (req: Request, res: Response) => userController.deleteUser(req, res));
+router.delete("/delete/:id", (req: Request, res: Response) =>
+  userController.deleteUser(req, res)
+);
 
 /**
  * @swagger
@@ -123,7 +131,9 @@ router.delete('/users/:id', (req: Request, res: Response) => userController.dele
  *       400:
  *         description: Invalid input.
  */
-router.post('/register', (req: Request, res: Response) => userController.register(req, res));
+router.post("/register", (req: Request, res: Response) =>
+  userController.register(req, res)
+);
 
 /**
  * @swagger
@@ -150,6 +160,8 @@ router.post('/register', (req: Request, res: Response) => userController.registe
  *       401:
  *         description: Unauthorized.
  */
-router.post('/login', (req: Request, res: Response) => userController.login(req, res));
+router.post("/login", (req: Request, res: Response) =>
+  userController.login(req, res)
+);
 
 export default router;

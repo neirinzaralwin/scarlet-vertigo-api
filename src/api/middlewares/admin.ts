@@ -21,18 +21,36 @@ const isAuth = (requiredRole?: "Admin" | "User" | "Moderator") => {
     try {
       const tokenMatch = verify(token, process.env.JWT_KEY!) as TokenPayload;
 
+      console.log("Token payload:", tokenMatch); // Log the token payload
+      console.log("Required role:", requiredRole); // Log the required role
+
       if (!tokenMatch || !tokenMatch.userId || !tokenMatch.role) {
         res.status(401).json({ message: "Invalid token." });
         return;
       }
 
-      if (requiredRole && tokenMatch.role !== requiredRole) {
-        res.status(403).json({ message: `Forbidden. ${requiredRole} role required.` });
+      if (
+        requiredRole &&
+        tokenMatch.role.toLowerCase() !== requiredRole.toLowerCase()
+      ) {
+        res
+          .status(403)
+          .json({ message: `Forbidden. ${requiredRole} role required.` });
         return;
       }
 
-      (req as Request & { userId: string; role: "Admin" | "User" | "Moderator" }).userId = tokenMatch.userId;
-      (req as Request & { userId: string; role: "Admin" | "User" | "Moderator" }).role = tokenMatch.role;
+      (
+        req as Request & {
+          userId: string;
+          role: "Admin" | "User" | "Moderator";
+        }
+      ).userId = tokenMatch.userId;
+      (
+        req as Request & {
+          userId: string;
+          role: "Admin" | "User" | "Moderator";
+        }
+      ).role = tokenMatch.role;
 
       next();
     } catch (err) {

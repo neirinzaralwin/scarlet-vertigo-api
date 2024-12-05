@@ -60,7 +60,7 @@ class UserService {
     const token = jwt.sign(
       { userId: user._id, email: user.email, role: user.role },
       process.env.JWT_KEY as string,
-      { expiresIn: "1h" }
+      { expiresIn: "7d" }
     );
 
     // Omit sensitive fields
