@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
-import OrderService from '../../domain/services/order.service';
-import { IOrder } from '../../infrastructure/models/order';
+import { Request, Response, NextFunction } from "express";
+import OrderService from "../../domain/services/order.service";
+import { IOrder } from "../../infrastructure/models/order";
 
 class OrderController {
   async create(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -13,7 +13,11 @@ class OrderController {
     }
   }
 
-  async findAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async findAll(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const orders = await OrderService.findAll();
       res.status(200).json(orders);
@@ -22,7 +26,11 @@ class OrderController {
     }
   }
 
-  async findById(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async findById(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const { id } = req.params;
       const order = await OrderService.findById(id);
