@@ -1,4 +1,4 @@
-import userModel, { IUser } from "../models/user";
+import userModel, { IUser } from "../models/user/user";
 import { USER_ROLE, RoleType } from "../../constants/role";
 
 class UserRepository {

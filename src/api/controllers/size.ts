@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import sizeService from "../../domain/services/size.service";
+import sizeService from "../../domain/services/size/size.service";
 
 class SizeController {
   async create(req: Request, res: Response): Promise<void> {

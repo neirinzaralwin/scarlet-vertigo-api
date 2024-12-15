@@ -1,5 +1,4 @@
-import Size, { ISize } from '../models/size';
-import { Document, Types } from 'mongoose';
+import Size, { ISize } from "../models/size/size";
 
 class SizeRepository {
   async create(name: string): Promise<ISize> {

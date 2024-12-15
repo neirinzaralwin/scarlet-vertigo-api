@@ -1,6 +1,6 @@
-import News, { NewsDocument } from '../models/news';
-import Image, { IImage } from '../models/image';
-import mongoose from 'mongoose';
+import News, { NewsDocument } from "../models/news/news";
+import Image, { IImage } from "../models/image";
+import mongoose from "mongoose";
 
 interface NewsData {
   title: string;
@@ -12,7 +12,10 @@ interface ImageUploadInput {
 }
 
 class NewsRepository {
-  async create(newsData: NewsData, imageIds: mongoose.Types.ObjectId[]): Promise<NewsDocument> {
+  async create(
+    newsData: NewsData,
+    imageIds: mongoose.Types.ObjectId[]
+  ): Promise<NewsDocument> {
     const news = new News({
       ...newsData,
       imageIds,
@@ -21,19 +24,22 @@ class NewsRepository {
   }
 
   async findAll(): Promise<NewsDocument[]> {
-    return await News.find().populate('imageIds', 'url');
+    return await News.find().populate("imageIds", "url");
   }
 
   async findById(id: string): Promise<NewsDocument | null> {
-    return await News.findById(id).populate('imageIds', 'url');
+    return await News.findById(id).populate("imageIds", "url");
   }
 
   async update(id: string, newsData: NewsData): Promise<NewsDocument | null> {
-    return await News.findByIdAndUpdate(id, newsData, { new: true }).populate('imageIds', 'url');
+    return await News.findByIdAndUpdate(id, newsData, { new: true }).populate(
+      "imageIds",
+      "url"
+    );
   }
 
   async delete(id: string): Promise<NewsDocument | null> {
-    const news = await News.findById(id).populate('imageIds', 'url');
+    const news = await News.findById(id).populate("imageIds", "url");
     if (news) {
       await News.findByIdAndDelete(id);
     }

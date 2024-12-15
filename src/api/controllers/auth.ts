@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import userService from "../../domain/services/user.service";
+import userService from "../../domain/services/user/user.service";
 
 class UserController {
   async getAllUsers(req: Request, res: Response): Promise<void> {
@@ -7,12 +7,10 @@ class UserController {
       const users = await userService.findAll();
       res.status(200).json(users);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Failed to fetch users",
-          error: (error as Error).message,
-        });
+      res.status(500).json({
+        message: "Failed to fetch users",
+        error: (error as Error).message,
+      });
     }
   }
 
@@ -25,12 +23,10 @@ class UserController {
       }
       res.status(200).json(user);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Failed to fetch user",
-          error: (error as Error).message,
-        });
+      res.status(500).json({
+        message: "Failed to fetch user",
+        error: (error as Error).message,
+      });
     }
   }
 
@@ -45,12 +41,10 @@ class UserController {
         .status(200)
         .json({ message: "User updated successfully", user: updatedUser });
     } catch (error) {
-      res
-        .status(400)
-        .json({
-          message: "Failed to update user",
-          error: (error as Error).message,
-        });
+      res.status(400).json({
+        message: "Failed to update user",
+        error: (error as Error).message,
+      });
     }
   }
 
@@ -63,12 +57,10 @@ class UserController {
       }
       res.status(204).send();
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Failed to delete user",
-          error: (error as Error).message,
-        });
+      res.status(500).json({
+        message: "Failed to delete user",
+        error: (error as Error).message,
+      });
     }
   }
 
@@ -79,12 +71,10 @@ class UserController {
         .status(201)
         .json({ message: "User registered successfully", user: newUser });
     } catch (error) {
-      res
-        .status(400)
-        .json({
-          message: "Registration failed",
-          error: (error as Error).message,
-        });
+      res.status(400).json({
+        message: "Registration failed",
+        error: (error as Error).message,
+      });
     }
   }
 

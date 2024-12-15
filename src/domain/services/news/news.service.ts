@@ -1,6 +1,6 @@
-import NewsRepository from '../../infrastructure/repositories/new.repository';
-import mongoose from 'mongoose';
-import { NewsDocument } from 'src/infrastructure/models/news';
+import NewsRepository from "../../infrastructure/repositories/new.repository";
+import mongoose from "mongoose";
+import { NewsDocument } from "src/infrastructure/models/news/news";
 
 interface NewsData {
   title: string;
@@ -13,12 +13,15 @@ interface ImageUploadInput {
 
 class NewsService {
   /**
-   * Creates a new news entry 
-   * @param newsData 
-   * @param imagePath 
-   * @returns 
+   * Creates a new news entry
+   * @param newsData
+   * @param imagePath
+   * @returns
    */
-  async create(newsData: NewsData, imagePath?: string): Promise<Partial<NewsDocument>> {
+  async create(
+    newsData: NewsData,
+    imagePath?: string
+  ): Promise<Partial<NewsDocument>> {
     const imageIds: mongoose.Types.ObjectId[] = [];
 
     if (imagePath) {
@@ -28,7 +31,9 @@ class NewsService {
 
     const newNews = await NewsRepository.create(newsData, imageIds);
 
-    const populatedNews = newNews ? await NewsRepository.findById(newNews._id.toString()) : null;
+    const populatedNews = newNews
+      ? await NewsRepository.findById(newNews._id.toString())
+      : null;
 
     return populatedNews?.toJSON() as Partial<NewsDocument>;
   }
@@ -58,7 +63,10 @@ class NewsService {
    * @param newsData - The updated data for the news entry.
    * @returns The updated news document or null if not found.
    */
-  async updateNews(id: string, newsData: NewsData): Promise<Partial<NewsDocument> | null> {
+  async updateNews(
+    id: string,
+    newsData: NewsData
+  ): Promise<Partial<NewsDocument> | null> {
     const updatedNews = await NewsRepository.update(id, newsData);
     return updatedNews ? (updatedNews.toJSON() as Partial<NewsDocument>) : null;
   }

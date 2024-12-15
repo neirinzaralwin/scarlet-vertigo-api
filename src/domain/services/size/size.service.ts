@@ -1,4 +1,4 @@
-import sizeRepository from '../../infrastructure/repositories/size.repository';
+import sizeRepository from "../../../infrastructure/repositories/size.repository";
 
 class SizeService {
   async create(name: string): Promise<any> {
@@ -12,7 +12,7 @@ class SizeService {
   async findById(id: string): Promise<any> {
     const size = await sizeRepository.findById(id);
     if (!size) {
-      throw new Error('Size not found');
+      throw new Error("Size not found");
     }
     return size;
   }
@@ -20,7 +20,7 @@ class SizeService {
   async update(id: string, name: string): Promise<any> {
     const updatedSize = await sizeRepository.update(id, name);
     if (!updatedSize) {
-      throw new Error('Size not found');
+      throw new Error("Size not found");
     }
     return updatedSize;
   }
@@ -28,7 +28,7 @@ class SizeService {
   async delete(id: string): Promise<any> {
     const deletedSize = await sizeRepository.delete(id);
     if (!deletedSize) {
-      throw new Error('Size not found');
+      throw new Error("Size not found");
     }
     return deletedSize;
   }

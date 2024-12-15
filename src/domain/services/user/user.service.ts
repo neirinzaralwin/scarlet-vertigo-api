@@ -1,6 +1,9 @@
-import userRepository from "../../infrastructure/repositories/user.repository";
-import { IUser, omitSensitiveFields } from "../../infrastructure/models/user";
-import { USER_ROLE, RoleType } from "../../constants/role";
+import userRepository from "../../../infrastructure/repositories/user.repository";
+import {
+  IUser,
+  omitSensitiveFields,
+} from "../../../infrastructure/models/user/user";
+import { USER_ROLE, RoleType } from "../../../constants/role";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 

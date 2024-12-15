@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import productService from "../../domain/services/product.service";
+import productService from "../../domain/services/product/product.service";
 import path from "path";
 
 class ProductController {

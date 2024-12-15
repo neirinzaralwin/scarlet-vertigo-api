@@ -1,4 +1,4 @@
-import Order, { IOrder } from '../models/order';
+import Order, { IOrder } from "../models/order/order";
 
 class OrderRepository {
   async create(orderData: IOrder): Promise<IOrder> {

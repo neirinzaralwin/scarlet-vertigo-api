@@ -1,5 +1,7 @@
-import ProductRepository from "../../infrastructure/repositories/product.repository";
-import Product, { ProductDocument } from "../../infrastructure/models/product";
+import ProductRepository from "../../../infrastructure/repositories/product.repository";
+import Product, {
+  ProductDocument,
+} from "../../../infrastructure/models/product/product";
 import mongoose from "mongoose";
 
 interface ProductData {

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import OrderService from "../../domain/services/order.service";
-import { IOrder } from "../../infrastructure/models/order";
+import OrderService from "../../domain/services/order/order.service";
+import { IOrder } from "../../infrastructure/models/order/order";
 
 class OrderController {
   async create(req: Request, res: Response, next: NextFunction): Promise<void> {

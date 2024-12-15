@@ -1,5 +1,5 @@
 import { model, Schema, Document, Types } from "mongoose";
-import { RoleType, USER_ROLE } from "../../constants/role";
+import { RoleType, USER_ROLE } from "../../../constants/role";
 import { omit } from "lodash";
 
 export interface IUser extends Document {
