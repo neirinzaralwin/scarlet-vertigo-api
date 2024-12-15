@@ -1,11 +1,12 @@
-import express, { Request, Response, NextFunction } from 'express';
-import cartController from '../controllers/cart';
-import userMiddleware  from '../middlewares/user';
+import express, { Request, Response, NextFunction } from "express";
+import cartController from "../controllers/cart";
+import userMiddleware from "../middlewares/user";
 
 const router = express.Router();
 
-const asyncHandler = (fn: Function) => (req: Request, res: Response, next: NextFunction) =>
-  Promise.resolve(fn(req, res, next)).catch(next);
+const asyncHandler =
+  (fn: Function) => (req: Request, res: Response, next: NextFunction) =>
+    Promise.resolve(fn(req, res, next)).catch(next);
 
 /**
  * @swagger
@@ -36,7 +37,13 @@ const asyncHandler = (fn: Function) => (req: Request, res: Response, next: NextF
  *       400:
  *         description: Invalid input.
  */
-router.post('/',  userMiddleware, asyncHandler((req: Request, res: Response) => cartController.createAddToCart(req, res)));
+router.post(
+  "/",
+  userMiddleware,
+  asyncHandler((req: Request, res: Response) =>
+    cartController.createAddToCart(req, res)
+  )
+);
 
 /**
  * @swagger
@@ -49,9 +56,21 @@ router.post('/',  userMiddleware, asyncHandler((req: Request, res: Response) => 
  *       200:
  *         description: A list of carts.
  */
-router.get('/', userMiddleware, asyncHandler((req: Request, res: Response) => cartController.getAllCartItems(req, res)));
+router.get(
+  "/",
+  userMiddleware,
+  asyncHandler((req: Request, res: Response) =>
+    cartController.getAllCartItems(req, res)
+  )
+);
 
-router.patch('/:id', userMiddleware, asyncHandler((req: Request, res: Response) => cartController.updateCartItem(req, res)));
+router.patch(
+  "/:id",
+  userMiddleware,
+  asyncHandler((req: Request, res: Response) =>
+    cartController.updateCartItem(req, res)
+  )
+);
 
 /**
  * @swagger
@@ -73,6 +92,12 @@ router.patch('/:id', userMiddleware, asyncHandler((req: Request, res: Response) 
  *       404:
  *         description: cart not found.
  */
-router.delete('/:id', userMiddleware, asyncHandler((req: Request, res: Response) => cartController.removeItemFromCarts(req, res)));
+router.delete(
+  "/:id",
+  userMiddleware,
+  asyncHandler((req: Request, res: Response) =>
+    cartController.removeItemFromCarts(req, res)
+  )
+);
 
 export default router;

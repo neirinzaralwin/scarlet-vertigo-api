@@ -1,11 +1,11 @@
-import express, { Request, Response, NextFunction } from 'express';
-import sizeController from '../controllers/size';
-import authMiddleware  from '../middlewares/admin';
+import express, { Request, Response, NextFunction } from "express";
+import sizeController from "../controllers/size";
 
 const router = express.Router();
 
-const asyncHandler = (fn: Function) => (req: Request, res: Response, next: NextFunction) =>
-  Promise.resolve(fn(req, res, next)).catch(next);
+const asyncHandler =
+  (fn: Function) => (req: Request, res: Response, next: NextFunction) =>
+    Promise.resolve(fn(req, res, next)).catch(next);
 
 /**
  * @swagger
@@ -31,7 +31,10 @@ const asyncHandler = (fn: Function) => (req: Request, res: Response, next: NextF
  *       400:
  *         description: Invalid input.
  */
-router.post('/', asyncHandler((req: Request, res: Response) => sizeController.create(req, res)));
+router.post(
+  "/",
+  asyncHandler((req: Request, res: Response) => sizeController.create(req, res))
+);
 
 /**
  * @swagger
@@ -46,7 +49,12 @@ router.post('/', asyncHandler((req: Request, res: Response) => sizeController.cr
  *       200:
  *         description: A list of sizes.
  */
-router.get('/', asyncHandler((req: Request, res: Response) => sizeController.findAll(req, res)));
+router.get(
+  "/",
+  asyncHandler((req: Request, res: Response) =>
+    sizeController.findAll(req, res)
+  )
+);
 
 /**
  * @swagger
@@ -69,7 +77,12 @@ router.get('/', asyncHandler((req: Request, res: Response) => sizeController.fin
  *       404:
  *         description: Size not found.
  */
-router.get('/:id', asyncHandler((req: Request, res: Response) => sizeController.findById(req, res)));
+router.get(
+  "/:id",
+  asyncHandler((req: Request, res: Response) =>
+    sizeController.findById(req, res)
+  )
+);
 
 /**
  * @swagger
@@ -103,7 +116,10 @@ router.get('/:id', asyncHandler((req: Request, res: Response) => sizeController.
  *       404:
  *         description: Size not found.
  */
-router.put('/:id', asyncHandler((req: Request, res: Response) => sizeController.update(req, res)));
+router.put(
+  "/:id",
+  asyncHandler((req: Request, res: Response) => sizeController.update(req, res))
+);
 
 /**
  * @swagger
@@ -126,6 +142,9 @@ router.put('/:id', asyncHandler((req: Request, res: Response) => sizeController.
  *       404:
  *         description: Size not found.
  */
-router.delete('/:id', asyncHandler((req: Request, res: Response) => sizeController.delete(req, res)));
+router.delete(
+  "/:id",
+  asyncHandler((req: Request, res: Response) => sizeController.delete(req, res))
+);
 
 export default router;

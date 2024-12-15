@@ -1,15 +1,17 @@
-import { Request, Response } from 'express';
-import sizeService from '../../domain/services/size.service';
+import { Request, Response } from "express";
+import sizeService from "../../domain/services/size.service";
 
 class SizeController {
   async create(req: Request, res: Response): Promise<void> {
     try {
-      const { name } = req.body; 
-      if (typeof name !== 'string') {
+      const { name } = req.body;
+      if (typeof name !== "string") {
         throw new Error("Invalid input: 'name' must be a string.");
       }
-      const size = await sizeService.create(name); 
-      res.status(200).json({message: "Size is created successfully", size:size});
+      const size = await sizeService.create(name);
+      res
+        .status(200)
+        .json({ message: "Size is created successfully", size: size });
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
     }
