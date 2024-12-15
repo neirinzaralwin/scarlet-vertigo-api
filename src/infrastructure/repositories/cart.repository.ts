@@ -1,5 +1,5 @@
-import Cart, { ICart } from "../../infrastructure/models/cart";
-import CartProduct from "../../infrastructure/models/cart-product";
+import Cart, { ICart } from "../models/cart/cart";
+import CartProduct from "../models/cart/cart-product";
 import { Types } from "mongoose";
 
 class CartRepository {

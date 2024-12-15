@@ -1,4 +1,4 @@
-import Category, { ICategory } from '../models/category';
+import Category, { ICategory } from '../models/category/category';
 import { Document, Types } from 'mongoose';
 
 class CategoryRepository {
