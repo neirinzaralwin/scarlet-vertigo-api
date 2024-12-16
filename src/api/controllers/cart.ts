@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Types } from "mongoose";
-import CartService from "../../domain/services/cart.service";
+import CartService from "../../domain/services/cart/cart.service";
 import ApiError from "../../utils/ApiError";
 import ApiResponse from "../../utils/ApiResponse";
 

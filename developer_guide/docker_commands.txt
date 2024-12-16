@@ -1,0 +1,14 @@
+# Clean up
+docker rm -f scarlet-vertigo-api-container
+docker rmi scarlet-vertigo-api-image
+
+# Build image
+docker build -t scarlet-vertigo-api-image .
+
+docker run -d -p 3031:3031 --env-file ./.env --name scarlet-vertigo-api-container scarlet-vertigo-api-image
+
+docker logs scarlet-vertigo-api-container
+
+docker ps
+
+docker inspect scarlet-vertigo-api-container

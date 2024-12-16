@@ -1,4 +1,4 @@
-import categoryRepository from '../../infrastructure/repositories/category.repository';
+import categoryRepository from "../../../infrastructure/repositories/category.repository";
 
 class CategoryService {
   async create(name: string): Promise<any> {
@@ -12,7 +12,7 @@ class CategoryService {
   async findById(id: string): Promise<any> {
     const category = await categoryRepository.findById(id);
     if (!category) {
-      throw new Error('Category not found');
+      throw new Error("Category not found");
     }
     return category;
   }
@@ -20,7 +20,7 @@ class CategoryService {
   async update(id: string, name: string): Promise<any> {
     const updatedCategory = await categoryRepository.update(id, name);
     if (!updatedCategory) {
-      throw new Error('Category not found');
+      throw new Error("Category not found");
     }
     return updatedCategory;
   }
@@ -28,7 +28,7 @@ class CategoryService {
   async delete(id: string): Promise<any> {
     const deletedCategory = await categoryRepository.delete(id);
     if (!deletedCategory) {
-      throw new Error('Category not found');
+      throw new Error("Category not found");
     }
     return deletedCategory;
   }

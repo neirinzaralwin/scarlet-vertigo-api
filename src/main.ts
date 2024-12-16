@@ -10,7 +10,7 @@ import newsRoutes from "./api/routes/news";
 import requestFormRoutes from "./api/routes/requestForm";
 import cartRoutes from "./api/routes/cart";
 import orderRoutes from "./api/routes/order";
-import { specs, swaggerUi } from "../src/config/swagger";
+import { specs, swaggerUi } from "./config/swagger";
 
 dotenv.config();
 
