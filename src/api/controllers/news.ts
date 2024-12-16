@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import NewsService from "src/domain/services/news/news.service";
+import NewsService from "../../domain/services/news/news.service";
 import path from "path";
 
 class NewsController {
@@ -32,12 +32,10 @@ class NewsController {
       const newsList = await NewsService.getAllNews();
       res.status(200).json(newsList);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Failed to retrieve news items",
-          error: (error as Error).message,
-        });
+      res.status(500).json({
+        message: "Failed to retrieve news items",
+        error: (error as Error).message,
+      });
     }
   }
 
@@ -51,12 +49,10 @@ class NewsController {
         res.status(404).json({ message: "News item not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Failed to retrieve news item",
-          error: (error as Error).message,
-        });
+      res.status(500).json({
+        message: "Failed to retrieve news item",
+        error: (error as Error).message,
+      });
     }
   }
 
@@ -74,12 +70,10 @@ class NewsController {
         res.status(404).json({ message: "News item not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Failed to update news item",
-          error: (error as Error).message,
-        });
+      res.status(500).json({
+        message: "Failed to update news item",
+        error: (error as Error).message,
+      });
     }
   }
 
@@ -93,12 +87,10 @@ class NewsController {
         res.status(404).json({ message: "News item not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Failed to delete news item",
-          error: (error as Error).message,
-        });
+      res.status(500).json({
+        message: "Failed to delete news item",
+        error: (error as Error).message,
+      });
     }
   }
 }

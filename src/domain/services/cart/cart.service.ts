@@ -1,18 +1,22 @@
 import { Types } from "mongoose";
-import CartRepository from "../../infrastructure/repositories/cart.repository";
-import Product from "../../infrastructure/models/product";
-import CartProduct from "../../infrastructure/models/cart-product";
-import User from "../../infrastructure/models/user";
-import ApiError from "../../utils/ApiError";
-import { ICart } from "../../infrastructure/models/cart";
-import OrderProduct from "../../infrastructure/models/order-product";
-import Order from "../../infrastructure/models/order";
+import CartRepository from "../../../infrastructure/repositories/cart.repository";
+import Product from "../../../infrastructure/models/product/product";
+import CartProduct from "../../../infrastructure/models/cart/cart-product";
+import User from "../../../infrastructure/models/user/user";
+import ApiError from "../../../utils/ApiError";
+import { ICart } from "../../../infrastructure/models/cart/cart";
+import OrderProduct from "../../../infrastructure/models/order/order-product";
+import Order from "../../../infrastructure/models/order/order";
 
 class CartService {
-  async createCart(userId: Types.ObjectId, productId: Types.ObjectId, quantity: number): Promise<ICart> {
+  async createCart(
+    userId: Types.ObjectId,
+    productId: Types.ObjectId,
+    quantity: number
+  ): Promise<ICart> {
     const product = await Product.findById(productId);
     if (!product) {
-      throw new ApiError(404, 'Product not found');
+      throw new ApiError(404, "Product not found");
     }
 
     let cart = await CartRepository.findByUserId(userId);
@@ -25,7 +29,10 @@ class CartService {
       }
     }
 
-    let cartProduct = await CartProduct.findOne({ cartId: cart._id, productId });
+    let cartProduct = await CartProduct.findOne({
+      cartId: cart._id,
+      productId,
+    });
     if (cartProduct) {
       cartProduct.quantity += quantity;
     } else {
@@ -59,7 +66,7 @@ class CartService {
     const order = new Order({
       userId,
       totalPrice,
-      status: 'Pending',
+      status: "Pending",
       orderProductId: orderProduct._id,
     });
     await order.save();
@@ -75,12 +82,14 @@ class CartService {
   async getAllCartItems(userId: Types.ObjectId) {
     const cart = await CartRepository.findByUserId(userId);
     if (!cart) {
-      throw new ApiError(404, 'Cart not found for this user');
+      throw new ApiError(404, "Cart not found for this user");
     }
 
-    const cartProducts = await CartRepository.findCartProducts(cart._id as Types.ObjectId);
+    const cartProducts = await CartRepository.findCartProducts(
+      cart._id as Types.ObjectId
+    );
     if (!cartProducts.length) {
-      throw new ApiError(404, 'Cart is empty for this user');
+      throw new ApiError(404, "Cart is empty for this user");
     }
 
     const totalPrice = cartProducts.reduce((total, item) => {
@@ -88,9 +97,14 @@ class CartService {
       return total + itemPrice * item.quantity;
     }, 0);
 
-    await CartRepository.updateTotalPrice(cart._id as Types.ObjectId, totalPrice);
+    await CartRepository.updateTotalPrice(
+      cart._id as Types.ObjectId,
+      totalPrice
+    );
 
-    const order = await Order.findOne({ userId, totalPrice }).select('-userId -orderProductId');
+    const order = await Order.findOne({ userId, totalPrice }).select(
+      "-userId -orderProductId"
+    );
 
     return {
       ...cart.toObject(),
@@ -116,16 +130,22 @@ class CartService {
       if (!cart) {
         throw new ApiError(404, "Cart not found for this user");
       }
-  
+
       const product = await Product.findById(productId);
       if (!product) {
         throw new ApiError(404, "Product not found");
       }
-  
-      let cartProduct = await CartRepository.findCartItem(cart._id as Types.ObjectId, productId);
+
+      let cartProduct = await CartRepository.findCartItem(
+        cart._id as Types.ObjectId,
+        productId
+      );
       if (cartProduct) {
         if (quantity <= 0) {
-          await CartRepository.removeCartItem(cart._id as Types.ObjectId, productId);
+          await CartRepository.removeCartItem(
+            cart._id as Types.ObjectId,
+            productId
+          );
         } else {
           cartProduct.quantity = quantity;
           await cartProduct.save();
@@ -139,15 +159,20 @@ class CartService {
         });
         await cartProduct.save();
       }
-  
-      const cartProducts = await CartRepository.findCartProducts(cart._id as Types.ObjectId);
+
+      const cartProducts = await CartRepository.findCartProducts(
+        cart._id as Types.ObjectId
+      );
       const totalPrice = cartProducts.reduce((total, item) => {
         const itemPrice = parseFloat(item.price.toString());
         return total + itemPrice * item.quantity;
       }, 0);
-  
-      await CartRepository.updateTotalPrice(cart._id as Types.ObjectId, totalPrice);
-  
+
+      await CartRepository.updateTotalPrice(
+        cart._id as Types.ObjectId,
+        totalPrice
+      );
+
       return { ...cart.toObject(), items: cartProducts };
     } catch (error) {
       throw new ApiError(500, "Failed to update cart");
@@ -155,33 +180,44 @@ class CartService {
   }
 
   /**
- * Removes a specific product from the user's cart.
- * @param userId - The user's ObjectId.
- * @param productId - The product's ObjectId to be removed.
- * @returns The updated cart.
- */
-  async  removeItemFromCart(userId: Types.ObjectId, productId: Types.ObjectId): Promise<ICart> {
+   * Removes a specific product from the user's cart.
+   * @param userId - The user's ObjectId.
+   * @param productId - The product's ObjectId to be removed.
+   * @returns The updated cart.
+   */
+  async removeItemFromCart(
+    userId: Types.ObjectId,
+    productId: Types.ObjectId
+  ): Promise<ICart> {
     const cart = await CartRepository.findByUserId(userId);
     if (!cart) {
-      throw new ApiError(404, 'Cart not found for this user');
+      throw new ApiError(404, "Cart not found for this user");
     }
-  
-    const cartProduct = await CartRepository.findCartItem(cart._id as Types.ObjectId, productId);
+
+    const cartProduct = await CartRepository.findCartItem(
+      cart._id as Types.ObjectId,
+      productId
+    );
     if (!cartProduct) {
-      throw new ApiError(404, 'Product not found in cart');
+      throw new ApiError(404, "Product not found in cart");
     }
-  
+
     await CartRepository.removeCartItem(cart._id as Types.ObjectId, productId);
-  
-    const cartProducts = await CartRepository.findCartProducts(cart._id as Types.ObjectId);
+
+    const cartProducts = await CartRepository.findCartProducts(
+      cart._id as Types.ObjectId
+    );
     const totalPrice = cartProducts.reduce((total, item) => {
       return total + parseFloat(item.price.toString()) * item.quantity;
     }, 0);
-  
-    await CartRepository.updateTotalPrice(cart._id as Types.ObjectId, totalPrice);
-  
+
+    await CartRepository.updateTotalPrice(
+      cart._id as Types.ObjectId,
+      totalPrice
+    );
+
     return { ...cart.toObject(), items: cartProducts };
-  } 
+  }
 }
 
 export default new CartService();

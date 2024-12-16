@@ -1,14 +1,14 @@
-import { Request, Response } from 'express';
-import categoryService from '../../domain/services/category.service';
+import { Request, Response } from "express";
+import categoryService from "../../domain/services/category/category.service";
 
 class CategoryController {
   async create(req: Request, res: Response): Promise<void> {
     try {
-      const { name } = req.body; 
-      if (typeof name !== 'string') {
+      const { name } = req.body;
+      if (typeof name !== "string") {
         throw new Error("Invalid input: 'name' must be a string.");
       }
-      const category = await categoryService.create(name); 
+      const category = await categoryService.create(name);
       res.status(200).json(category);
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });
@@ -35,7 +35,10 @@ class CategoryController {
 
   async update(req: Request, res: Response): Promise<void> {
     try {
-      const category = await categoryService.update(req.params.id, req.body.name);
+      const category = await categoryService.update(
+        req.params.id,
+        req.body.name
+      );
       res.status(200).json(category);
     } catch (error) {
       res.status(404).json({ error: (error as Error).message });

@@ -1,5 +1,4 @@
-import Category, { ICategory } from '../models/category/category';
-import { Document, Types } from 'mongoose';
+import Category, { ICategory } from "../models/category/category";
 
 class CategoryRepository {
   async create(name: string): Promise<ICategory> {
