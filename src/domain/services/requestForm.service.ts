@@ -2,7 +2,7 @@ import formRepository from "../../infrastructure/repositories/form.repository";
 import { IForm } from "../../infrastructure/models/requestForm";
 import { Types } from "mongoose";
 
-class FormService {
+class RequestFormService {
   // Create a new form
   async create(userId: string, title: string, message: string): Promise<IForm> {
     return await formRepository.create(
@@ -45,4 +45,4 @@ class FormService {
   }
 }
 
-export default new FormService();
+export default new RequestFormService();

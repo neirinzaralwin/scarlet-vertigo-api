@@ -1,35 +1,31 @@
 import { Request, Response } from "express";
-import formService from "../../domain/services/form.service";
+import requestFormService from "../../domain/services/requestForm.service";
 
-class FormController {
+class RequestFormController {
   // Create a new form
   async create(req: Request, res: Response) {
     try {
       const { userId, title, message } = req.body;
-      const form = await formService.create(userId, title, message);
+      const form = await requestFormService.create(userId, title, message);
       res.status(201).json(form);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Error creating form",
-          error: (error as Error).message,
-        });
+      res.status(500).json({
+        message: "Error creating form",
+        error: (error as Error).message,
+      });
     }
   }
 
   // Get all forms
   async findAll(req: Request, res: Response) {
     try {
-      const forms = await formService.findAll();
+      const forms = await requestFormService.findAll();
       res.status(200).json(forms);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Error retrieving forms",
-          error: (error as Error).message,
-        });
+      res.status(500).json({
+        message: "Error retrieving forms",
+        error: (error as Error).message,
+      });
     }
   }
 
@@ -37,7 +33,7 @@ class FormController {
   async findById(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const form = await formService.findById(id);
+      const form = await requestFormService.findById(id);
       res.status(200).json(form);
     } catch (error) {
       res
@@ -51,7 +47,7 @@ class FormController {
     try {
       const { id } = req.params;
       const { title, message } = req.body;
-      const updatedForm = await formService.update(id, title, message);
+      const updatedForm = await requestFormService.update(id, title, message);
       res.status(200).json(updatedForm);
     } catch (error) {
       res
@@ -64,7 +60,7 @@ class FormController {
   async delete(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const deletedForm = await formService.delete(id);
+      const deletedForm = await requestFormService.delete(id);
       res.status(200).json(deletedForm);
     } catch (error) {
       res
@@ -74,4 +70,4 @@ class FormController {
   }
 }
 
-export default new FormController();
+export default new RequestFormController();
