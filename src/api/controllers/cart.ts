@@ -3,11 +3,12 @@ import { Types } from "mongoose";
 import CartService from "../../domain/services/cart/cart.service";
 import ApiError from "../../utils/ApiError";
 import ApiResponse from "../../utils/ApiResponse";
+import { getUserId } from "../../utils/JwtExtract";
 
 class CartController {
   async createAddToCart(req: Request, res: Response): Promise<void> {
     try {
-      const userId = (req as Request & { userId?: string }).userId;
+      const userId = getUserId(req);
       const { productId, quantity = 1 } = req.body;
 
       if (quantity <= 0) {
@@ -68,7 +69,8 @@ class CartController {
    * @param res - Express response object.
    */
   async getAllCartItems(req: Request, res: Response): Promise<void> {
-    const userId = (req as Request & { userId?: string }).userId;
+    const userId = getUserId(req);
+    console.log(userId);
     const host = req.headers.host;
     const links = [
       {
@@ -116,8 +118,7 @@ class CartController {
 
   async updateCartItem(req: Request, res: Response): Promise<void> {
     try {
-      const userId = (req as Request & { user: { userId?: string } }).user
-        ?.userId;
+      const userId = getUserId(req);
       const { productId, quantity } = req.body;
 
       if (
@@ -196,7 +197,7 @@ class CartController {
 
   async removeItemFromCarts(req: Request, res: Response): Promise<void> {
     try {
-      const userId = (req as Request & { userId?: string }).userId;
+      const userId = getUserId(req);
       const { productId } = req.params;
 
       if (
