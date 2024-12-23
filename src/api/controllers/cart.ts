@@ -5,52 +5,32 @@ import ApiError from "../../utils/ApiError";
 import ApiResponse from "../../utils/ApiResponse";
 import { getUserId } from "../../utils/JwtExtract";
 
+export type CreateAddToCartRequest = {
+  productId: string;
+  quantity?: number;
+};
+
 class CartController {
   async createAddToCart(req: Request, res: Response): Promise<void> {
-    try {
-      const userId = getUserId(req);
-      const { productId, quantity = 1 } = req.body;
+    const userId = getUserId(req);
+    const createAddToCartRequest = req.body as CreateAddToCartRequest;
+    const { quantity = 1 } = createAddToCartRequest;
 
-      if (quantity <= 0) {
-        throw new ApiError(400, "Quantity must be greater than 0");
-      }
-
-      // if (!userId || !Types.ObjectId.isValid(userId) || !Types.ObjectId.isValid(productId) || quantity <= 0) {
-      //   throw new ApiError(400, "Invalid userId, productId, or quantity provided");
-      // }
-
-      const cart = await CartService.createCart(
-        new Types.ObjectId(userId),
-        new Types.ObjectId(productId),
-        quantity
+    if (quantity <= 0) {
+      throw new ApiError(
+        400,
+        "Invalid userId, productId, or quantity provided"
       );
+    }
 
-      const host = req.headers.host;
-      const links = [
-        {
-          rel: "view_cart",
-          href: `http://${host}/carts`,
-          method: "GET",
-          description: "View Cart",
-        },
-        {
-          rel: "orders",
-          href: `http://${host}/orders`,
-          method: "GET",
-          description: "Orders",
-        },
-      ];
+    const [cart, error] = await CartService.createCart(
+      new Types.ObjectId(userId),
+      createAddToCartRequest
+    )
+      .then((data) => [data, null])
+      .catch((err) => [null, err]);
 
-      res
-        .status(201)
-        .json(
-          new ApiResponse(
-            201,
-            { cart, links },
-            "Item added to cart successfully"
-          )
-        );
-    } catch (error) {
+    if (error) {
       if (error instanceof ApiError) {
         res
           .status(error.statusCode)
@@ -61,6 +41,10 @@ class CartController {
           .json(new ApiResponse(500, null, "An unexpected error occurred"));
       }
     }
+
+    res
+      .status(201)
+      .json(new ApiResponse(201, { cart }, "Item added to cart successfully"));
   }
 
   /**

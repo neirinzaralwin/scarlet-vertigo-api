@@ -1,24 +1,45 @@
 import { Types } from "mongoose";
 import CartRepository from "../../../infrastructure/repositories/cart.repository";
-import Product from "../../../infrastructure/models/product/product";
+import Product, {
+  ProductDocument,
+} from "../../../infrastructure/models/product/product";
 import CartProduct from "../../../infrastructure/models/cart/cart-product";
 import User from "../../../infrastructure/models/user/user";
 import ApiError from "../../../utils/ApiError";
 import { ICart } from "../../../infrastructure/models/cart/cart";
 import OrderProduct from "../../../infrastructure/models/order/order-product";
 import Order from "../../../infrastructure/models/order/order";
+import { Request, Response } from "express";
+import { CreateAddToCartRequest } from "src/api/controllers/cart";
 
 class CartService {
+  /**
+   * Create or update cart.
+   * @param userId - The ID of the user to retrieve cart items for.
+   * @param req - CreateAddToCartRequest which contains user request.
+   * @returns The user's cart with updated products.
+   */
   async createCart(
     userId: Types.ObjectId,
-    productId: Types.ObjectId,
-    quantity: number
+    req: CreateAddToCartRequest
   ): Promise<ICart> {
-    const product = await Product.findById(productId);
+    const product: ProductDocument | null = await Product.findById(
+      req.productId
+    );
     if (!product) {
       throw new ApiError(404, "Product not found");
     }
 
+    const cart: ICart = await this.updateAndCreateCart(userId);
+
+    await this.updateAndCreateCartProduct(cart, req.quantity ?? 1, product);
+
+    await this.updateTotalPrice(cart);
+
+    return await CartRepository.create(cart);
+  }
+
+  private async updateAndCreateCart(userId: Types.ObjectId): Promise<ICart> {
     let cart = await CartRepository.findByUserId(userId);
     if (!cart) {
       cart = await CartRepository.create({ userId, totalPrice: 0 });
@@ -28,23 +49,32 @@ class CartService {
         await user.save({ validateBeforeSave: false });
       }
     }
+    return cart;
+  }
 
+  private async updateAndCreateCartProduct(
+    cart: ICart,
+    quantity: number,
+    product: ProductDocument
+  ) {
     let cartProduct = await CartProduct.findOne({
       cartId: cart._id,
-      productId,
+      productId: product._id,
     });
     if (cartProduct) {
       cartProduct.quantity += quantity;
     } else {
       cartProduct = new CartProduct({
         cartId: cart._id,
-        productId,
-        quantity,
+        productId: product._id,
+        quantity: quantity,
         price: product.price,
       });
     }
     await cartProduct.save();
+  }
 
+  private async updateTotalPrice(cart: ICart): Promise<void> {
     const cartProducts = await CartProduct.find({ cartId: cart._id });
     const totalPrice = cartProducts.reduce((total, item) => {
       const itemPrice = parseFloat(item.price.toString());
@@ -52,26 +82,6 @@ class CartService {
     }, 0);
 
     cart.totalPrice = totalPrice;
-    await CartRepository.create(cart);
-
-    const orderProduct = new OrderProduct({
-      userId,
-      cartId: cart._id,
-      productId,
-      quantity,
-      price: product.price,
-    });
-    await orderProduct.save();
-
-    const order = new Order({
-      userId,
-      totalPrice,
-      status: "Pending",
-      orderProductId: orderProduct._id,
-    });
-    await order.save();
-
-    return cart;
   }
 
   /**
