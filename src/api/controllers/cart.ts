@@ -70,38 +70,7 @@ class CartController {
    */
   async getAllCartItems(req: Request, res: Response): Promise<void> {
     const userId = getUserId(req);
-    console.log(userId);
-    const host = req.headers.host;
-    const links = [
-      {
-        rel: "self",
-        href: `http://${host}/carts`,
-        method: "GET",
-        description: "View all items in your cart",
-      },
-      {
-        rel: "add_to_cart",
-        href: `http://${host}/carts`,
-        method: "POST",
-        description: "Add an item to your cart",
-      },
-      {
-        rel: "empty_cart",
-        href: `http://${host}/carts/empty`,
-        method: "DELETE",
-        description: "Empty your cart",
-      },
-      {
-        rel: "remove_item",
-        href: `http://${host}/carts/:itemId`,
-        method: "DELETE",
-        description: "Remove an item from the cart",
-      },
-    ];
-
-    const [cartData, error] = await CartService.getAllCartItems(
-      new Types.ObjectId(userId)
-    )
+    const [cartData, error] = await CartService.getAllCartItems(userId)
       .then((data) => [data, null])
       .catch((err) => [null, err]);
 
@@ -110,7 +79,7 @@ class CartController {
       .json(
         new ApiResponse(
           200,
-          { cart: error != null ? [] : cartData, links },
+          { cart: error != null ? [] : cartData },
           "Cart items retrieved successfully"
         )
       );

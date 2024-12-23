@@ -79,8 +79,10 @@ class CartService {
    * @param userId - The ID of the user to retrieve cart items for.
    * @returns The user's cart with populated product details, or an error if not found.
    */
-  async getAllCartItems(userId: Types.ObjectId) {
-    const cart = await CartRepository.findByUserId(userId);
+  async getAllCartItems(userId: string) {
+    const cart: ICart | null = await CartRepository.findByUserId(
+      new Types.ObjectId(userId)
+    );
     if (!cart) {
       throw new ApiError(404, "Cart not found for this user");
     }
@@ -88,7 +90,7 @@ class CartService {
     const cartProducts = await CartRepository.findCartProducts(
       cart._id as Types.ObjectId
     );
-    if (!cartProducts.length) {
+    if (!cartProducts) {
       throw new ApiError(404, "Cart is empty for this user");
     }
 
@@ -102,14 +104,14 @@ class CartService {
       totalPrice
     );
 
-    const order = await Order.findOne({ userId, totalPrice }).select(
-      "-userId -orderProductId"
-    );
+    // const order = await Order.findOne({ userId, totalPrice }).select(
+    //   "-userId -orderProductId"
+    // );
 
     return {
       ...cart.toObject(),
       items: cartProducts,
-      order: order ? order.toObject() : null,
+      // order: order ? order.toObject() : null,
     };
   }
 
